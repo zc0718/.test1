@@ -66,7 +66,7 @@ def analyze_commits():
     result = run("git log --grep='chore(release):' -n 1 --format=%H")
     since = result.stdout.strip()
 
-    format_str = "%s%n%b---ENDMSG---%h"
+    format_str = "%s|@|%H---ENDMSG---"
     if since:
         cmd = f"git log {since}..HEAD --format='{format_str}'"
     else:
@@ -76,8 +76,10 @@ def analyze_commits():
     if not result.stdout.strip():
         return 0, {}
 
-    raw_blocks = result.stdout.strip().split("---ENDMSG---")
+    raw_blocks = result.stdout.strip().split("---ENDMSG---\n")
     print("eeeeeeeeeeeeeeeeee\n", raw_blocks)
+    raw_blocks = [_.split('|@|') for _ in raw_blocks]
+    print("kkkkkkkkkkkkkkkkkk\n", raw_blocks)
 
     level = 0
     entries = {
