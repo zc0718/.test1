@@ -77,11 +77,8 @@ def analyze_commits():
         return 0, {}
 
     raw_blocks = result.stdout.strip().split("---ENDMSG---\n")
-    print("eeeeeeeeeeeeeeeeee\n", raw_blocks)
     raw_blocks = [_.split('|@|') for _ in raw_blocks]
-    print("kkkkkkkkkkkkkkkkkk\n", raw_blocks)
     clean_blocks = [[_[0].split('\n')[0], _[1] if "---ENDMSG---" not in _[1] else _[1][:-12]] for _ in raw_blocks]
-    print("vvvvvvvvvvvvvvvvv\n", clean_blocks)
 
     level = 0
     entries = {
@@ -185,7 +182,7 @@ def main():
         f.write("\n")
 
     if log_entries:
-        new_log = "#" * max(1, 3 - bump_level) + f" {new_version}({date.today().isoformat()})\n\n"
+        new_log = "#" * max(1, 3 - bump_level) + f" {new_version} ({date.today().isoformat()})\n\n"
         for category, items in log_entries.items():
             if items:
                 new_log += f"### {category}\n"
