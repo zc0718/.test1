@@ -81,7 +81,7 @@ def analyze_commits():
     raw_blocks = [_.split('|@|') for _ in raw_blocks]
     print("kkkkkkkkkkkkkkkkkk\n", raw_blocks)
     clean_blocks = [[_[0].split('\n')[0], _[1] if "---ENDMSG---" not in _[1] else _[1][:-12]] for _ in raw_blocks]
-    print("vvvvvvvvvvvvvvvvv\n", raw_blocks)
+    print("vvvvvvvvvvvvvvvvv\n", clean_blocks)
 
     level = 0
     entries = {
@@ -112,8 +112,8 @@ def analyze_commits():
         "chore": ("Chore", 0)
     }
 
-    for (full_msg, _), (_short_commit, _long_hash) in zip(raw_blocks, clean_blocks):
-        clean_line = re.sub(r'^[a-z]+(\([^)]*\))?!?:\s*', '', _short_commit, flags=re.I)
+    for (full_msg, _), (first_line, current_hash) in zip(raw_blocks, clean_blocks):
+        clean_line = re.sub(r'^[a-z]+(\([^)]*\))?!?:\s*', '', first_line, flags=re.I)
         current_msg_level, category = 0, None
 
         has_breaking_change = "BREAKING CHANGE" in full_msg
@@ -140,7 +140,7 @@ def analyze_commits():
         if category and (current_msg_level > 0 or category == "Breaking Changes"):
             if category in set(entries.keys()).difference({"Other", }):
                 level = max(level, current_msg_level)
-                entry = f"* {clean_line} ([{current_hash}]({repo_url}/commit/{current_hash}))"
+                entry = f"* {clean_line} ([{current_hash[:7]}]({repo_url}/commit/{current_hash}))"
                 entries[category].append(entry)
             else:
                 entries["Other"].append(entry)
