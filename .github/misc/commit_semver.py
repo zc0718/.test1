@@ -80,7 +80,7 @@ def analyze_commits():
     print("eeeeeeeeeeeeeeeeee\n", raw_blocks)
     raw_blocks = [_.split('|@|') for _ in raw_blocks]
     print("kkkkkkkkkkkkkkkkkk\n", raw_blocks)
-    raw_blocks = [[_[0].split('\n')[0], _[1] if "---ENDMSG---" not in _[1] else _[1][:-12]] for _ in raw_blocks]
+    clean_blocks = [[_[0].split('\n')[0], _[1] if "---ENDMSG---" not in _[1] else _[1][:-12]] for _ in raw_blocks]
     print("vvvvvvvvvvvvvvvvv\n", raw_blocks)
 
     level = 0
@@ -112,18 +112,9 @@ def analyze_commits():
         "chore": ("Chore", 0)
     }
 
-    for i in range(len(raw_blocks) - 1):
-        full_msg = raw_blocks[i].strip()
-        current_hash = raw_blocks[i+1].splitlines()[0].strip()
-
-        if not full_msg or "[skip ci]" in full_msg:
-            continue
-
-        first_line = full_msg.splitlines()[0]
-        clean_line = re.sub(r'^[a-z]+(\([^)]*\))?!?:\s*', '', first_line, flags=re.I)
-
-        current_msg_level = 0
-        category = None
+    for (full_msg, _), (_short_commit, _long_hash) in zip(raw_blocks, clean_blocks):
+        clean_line = re.sub(r'^[a-z]+(\([^)]*\))?!?:\s*', '', _short_commit, flags=re.I)
+        current_msg_level, category = 0, None
 
         has_breaking_change = "BREAKING CHANGE" in full_msg
         has_exclamation = bool(re.match(r"^[a-z]+(\([^)]*\))!:", first_line))
@@ -142,11 +133,7 @@ def analyze_commits():
                 else:
                     current_msg_level = base_level
 
-        elif has_breaking_change:
-            current_msg_level = 3
-            category = "Breaking Changes"
-
-        elif has_exclamation:
+        elif has_breaking_change or has_exclamation:
             current_msg_level = 3
             category = "Breaking Changes"
 
