@@ -54,3 +54,5 @@ int predict_random_sample() {
 
     return net(test_img);
 }
+
+// 33
