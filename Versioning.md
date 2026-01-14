@@ -1,3 +1,8 @@
+## 1.0.3 (2026-01-14)
+
+### Bug Fixes
+* semver test ([b322197](https://github.com/zc0718/.test1/commit/b3221972e72927161359c8cac9353b0bc458c635))
+
 ## 1.0.2(2026-01-14)
 
 ### Bug Fixes
