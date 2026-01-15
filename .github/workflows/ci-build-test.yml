@@ -48,7 +48,7 @@ jobs:
         id: read_meta_win
         if: matrix.os == 'windows-latest'
         run: |
-          $pkg_name = Get-Content metadata.json | ConvertForm-Json | Select-Object -ExpandProperty name
+          $pkg_name = Get-Content metadata.json | ConvertFrom-Json | Select-Object -ExpandProperty name
           Add-Content -Path "$env:GITHUB_OUTPUT" "pkg_name=$pkg_name"
 
       - name: Configure Conan
