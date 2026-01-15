@@ -37,13 +37,19 @@ jobs:
         run: |
           pip install conan
 
-      - name: Get package name
+      - name: Get package name (Windows)
         id: read_meta
+        if: matrix.os != 'windows-latest'
         run: |
           pkg_name=$(jq -r '.name | tostring' metadata.json)
           echo "pkg_name=$pkg_name" >> $GITHUB_OUTPUT
-
-
+      
+      - name: Get package name (Windows)
+        id: read_meta
+        if: matrix.os == 'windows-latest'
+        run: |
+          $pkg_name = Get-Content metadata.json | ConvertForm-Json | Select-Object -ExpandProperty name
+          Add-Content -Path "$env:GITHUB_OUTPUT" "pkg_name=$pkg_name"
 
       - name: Configure Conan
         run: |
